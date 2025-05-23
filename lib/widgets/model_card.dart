@@ -57,120 +57,124 @@ class _ModelCardState extends State<ModelCard> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Imagem do modelo
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: AssetImage(widget.model.imagePath),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            
-            // Informações do modelo
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.model.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Imagem do modelo
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: AssetImage(widget.model.imagePath),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
+                ),
+                const SizedBox(width: 16),
+                
+                // Informações do modelo
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Categoria: ${_formatCategory(widget.model.category)}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        height: 4,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: _getCategoryColor(widget.model.category),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  
-                  // Avaliação média
-                  Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 20),
-                      const SizedBox(width: 4),
-                      Text(
-                        _isLoading ? 'Carregando...' : _averageRating.toStringAsFixed(1),
+                        widget.model.name,
                         style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 12),
-                  
-                  // Botões
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // Botão de avaliação
-                      OutlinedButton.icon(
-                        icon: const Icon(Icons.star),
-                        label: const Text('Avaliar'),
-                        onPressed: () async {
-                          // Navegar para a tela de avaliação
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RatingScreen(model: widget.model),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Categoria: ${_formatCategory(widget.model.category)}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          );
-                          
-                          // Recarregar a média ao voltar
-                          _loadAverageRating();
-                        },
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            height: 4,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: _getCategoryColor(widget.model.category),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(height: 8),
                       
-                      // Botão de visualização 3D
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.view_in_ar),
-                        label: const Text('Visualizar 3D'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF336633),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ModelViewerScreen(model: widget.model),
+                      // Avaliação média
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 20),
+                          const SizedBox(width: 4),
+                          Text(
+                            _isLoading ? 'Carregando...' : _averageRating.toStringAsFixed(1),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Botões em uma linha separada
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Botão de avaliação
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.star),
+                  label: const Text('Avaliar'),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RatingScreen(model: widget.model),
+                      ),
+                    );
+                    _loadAverageRating();
+                  },
+                ),
+                const SizedBox(width: 8),
+                
+                // Botão de visualização 3D
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.view_in_ar),
+                  label: const Text('Visual 3D'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF336633),
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ModelViewerScreen(model: widget.model),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

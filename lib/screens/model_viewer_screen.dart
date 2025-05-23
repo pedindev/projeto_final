@@ -26,12 +26,21 @@ class ModelViewerScreen extends StatelessWidget {
         autoRotate: true,
         cameraControls: true,
         disableZoom: false,
+        loading: Loading.eager,
         relatedCss: '''
           model-viewer {
             width: 100%;
             height: 100%;
             background-color: #EEEEEE;
           }
+        ''',
+        innerModelViewerHtml: '''
+          <style>
+            model-viewer {
+              width: 100%;
+              min-height: 100vh;
+            }
+          </style>
         ''',
       ),
     );
