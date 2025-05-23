@@ -50,13 +50,13 @@ class _ModelCardState extends State<ModelCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
+      child: Container(
+        padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -64,19 +64,16 @@ class _ModelCardState extends State<ModelCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Imagem do modelo
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                      image: AssetImage(widget.model.imagePath),
-                      fit: BoxFit.cover,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    widget.model.imagePath,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 
                 // Informações do modelo
                 Expanded(
@@ -88,10 +85,11 @@ class _ModelCardState extends State<ModelCard> {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Row(
                         children: [
                           Flexible(
@@ -101,13 +99,14 @@ class _ModelCardState extends State<ModelCard> {
                                 fontSize: 14,
                                 color: Colors.grey[600],
                               ),
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 8),
                           Container(
                             height: 4,
-                            width: 40,
+                            width: 32,
                             decoration: BoxDecoration(
                               color: _getCategoryColor(widget.model.category),
                               borderRadius: BorderRadius.circular(2),
@@ -115,17 +114,15 @@ class _ModelCardState extends State<ModelCard> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
-                      
-                      // Avaliação média
+                      const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 20),
+                          const Icon(Icons.star, color: Colors.amber, size: 18),
                           const SizedBox(width: 4),
                           Text(
                             _isLoading ? 'Carregando...' : _averageRating.toStringAsFixed(1),
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.grey,
                             ),
                           ),
@@ -137,42 +134,57 @@ class _ModelCardState extends State<ModelCard> {
               ],
             ),
             const SizedBox(height: 12),
-            // Botões em uma linha separada
+            // Botões
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // Botão de avaliação
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.star),
-                  label: const Text('Avaliar'),
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RatingScreen(model: widget.model),
-                      ),
-                    );
-                    _loadAverageRating();
-                  },
+                SizedBox(
+                  height: 36,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.star, size: 18),
+                    label: const Text(
+                      'Avaliar',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                    ),
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RatingScreen(model: widget.model),
+                        ),
+                      );
+                      _loadAverageRating();
+                    },
+                  ),
                 ),
                 const SizedBox(width: 8),
-                
                 // Botão de visualização 3D
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.view_in_ar),
-                  label: const Text('Visual 3D'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF336633),
-                    foregroundColor: Colors.white,
+                SizedBox(
+                  height: 36,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.view_in_ar, size: 18),
+                    label: const Text(
+                      'Visual 3D',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF336633),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ModelViewerScreen(model: widget.model),
+                        ),
+                      );
+                    },
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ModelViewerScreen(model: widget.model),
-                      ),
-                    );
-                  },
                 ),
               ],
             ),
